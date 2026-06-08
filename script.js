@@ -25,10 +25,11 @@ function criarItemTransacao(transacao) {
     const item = document.createElement("li");
     const botaoExcluir = document.createElement("button");
 
+    // Ajuste e formatação da data para o padrão brasileiro
     const dataObjeto = new Date(transacao.data + 'T00:00:00');
     const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
 
-    // Exibe a categoria salva entre colchetes antes da descrição
+    // ALTERAÇÃO AQUI: Agora exibe a categoria salva entre colchetes antes da descrição
     item.textContent =
         `${dataFormatada} | [${transacao.categoria || 'Outros'}] ${transacao.descricao} - ${transacao.valor.toLocaleString("pt-BR", {
             style: "currency",
@@ -56,7 +57,9 @@ formulario.addEventListener("submit", (event) => {
     const tipo = document.getElementById("tipo").value;
     const data = document.getElementById("data").value;
     const descricao = document.getElementById("descricao").value;
-    const categoria = document.getElementById("categoria").value; // Captura a categoria
+    
+    // ALTERAÇÃO AQUI: Captura qual categoria o usuário escolheu no HTML
+    const categoria = document.getElementById("categoria").value; 
 
     const valor = Number(
         document.getElementById("valor")
@@ -64,16 +67,18 @@ formulario.addEventListener("submit", (event) => {
             .replace(",", ".")
     );
 
+    // Validação para evitar que valores incorretos quebrem o saldo
     if (isNaN(valor) || valor <= 0) {
         alert("Por favor, insira um valor numérico válido e maior que zero!");
         return; 
     }
 
+    // ALTERAÇÃO AQUI: Adicionamos a propriedade "categoria" dentro do objeto da transação
     const transacao = {
         tipo,
         data,
         descricao,
-        categoria, // Salva a categoria no objeto
+        categoria, 
         valor
     };
 
@@ -85,9 +90,12 @@ formulario.addEventListener("submit", (event) => {
     const mensagem = document.getElementById("mensagem");
     mensagem.textContent = "✨ Nova movimentação adicionada com sucesso.";
 
+    // Limpa os campos de texto do formulário
     document.getElementById("descricao").value = "";
     document.getElementById("valor").value = "";
-    document.getElementById("categoria").value = "Outros"; // Reseta o campo de categoria
+    
+    // ALTERAÇÃO AQUI: Reseta a caixinha de seleção para a opção padrão
+    document.getElementById("categoria").value = "Outros"; 
 });
 
 function salvarTransacoes() {
@@ -114,4 +122,5 @@ function carregarTransacoes() {
     atualizarSaldo();
 }
 
+// Inicializa a aplicação buscando dados salvos no navegador
 carregarTransacoes();
