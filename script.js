@@ -32,13 +32,19 @@ function criarItemTransacao(transacao) {
 
     const botaoExcluir = document.createElement("button");
 
-   item.textContent =
-    `${transacao.data} | ${transacao.descricao} - ${transacao.valor.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    })} `;
+    // 1. Ajuste e formatação da data para o padrão brasileiro
+    const dataObjeto = new Date(transacao.data + 'T00:00:00');
+    const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
+
+    item.textContent =
+        `${dataFormatada} | ${transacao.descricao} - ${transacao.valor.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        })} `;
 
     botaoExcluir.textContent = "❌";
+    // 2. Adicionando propriedade de acessibilidade
+    botaoExcluir.setAttribute("aria-label", "Excluir esta transação");
 
     botaoExcluir.addEventListener("click", () => {
 
@@ -76,12 +82,18 @@ formulario.addEventListener("submit", (event) => {
             .replace(",", ".")
     );
 
+    // 3. Validação para evitar que valores incorretos quebrem o saldo
+    if (isNaN(valor) || valor <= 0) {
+        alert("Por favor, insira um valor numérico válido e maior que zero!");
+        return; 
+    }
+
     const transacao = {
-    tipo,
-    data,
-    descricao,
-    valor
-};
+        tipo,
+        data,
+        descricao,
+        valor
+    };
 
     transacoes.push(transacao);
 
