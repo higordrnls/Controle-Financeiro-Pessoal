@@ -5,9 +5,11 @@ const transacoes = [];
 function atualizarSaldo() {
     let saldo = 0;
 
+    // Lista com todas as categorias que devem SOMAR no saldo
+    const categoriasReceita = ["Salário", "Freelance", "Investimentos", "Outras Entradas"];
+
     for (const transacao of transacoes) {
-        // Se a categoria for a de Receita, soma. Se for qualquer outra, subtrai automaticamente.
-        if (transacao.categoria === "Receita (Geral)") {
+        if (categoriasReceita.includes(transacao.categoria)) {
             saldo += transacao.valor;
         } else {
             saldo -= transacao.valor;
@@ -24,13 +26,14 @@ function atualizarSaldo() {
 function criarItemTransacao(transacao) {
     const lista = document.getElementById("lista-transacoes");
     const item = document.createElement("li");
+    const containerTexto = document.createElement("div");
     const botaoExcluir = document.createElement("button");
 
     const dataObjeto = new Date(transacao.data + 'T00:00:00');
     const dataFormatada = dataObjeto.toLocaleDateString('pt-BR');
 
-    // Mostra a categoria bonitinha na lista antes da descrição
-    item.textContent =
+    // Texto principal contendo Data, Categoria, Descrição e Valor
+    containerTexto.textContent =
         `${dataFormatada} | [${transacao.categoria}] ${transacao.descricao} - ${transacao.valor.toLocaleString("pt-BR", {
             style: "currency",
             currency: "BRL"
@@ -47,6 +50,7 @@ function criarItemTransacao(transacao) {
         atualizarSaldo();
     });
 
+    item.appendChild(containerTexto);
     item.appendChild(botaoExcluir);
     lista.appendChild(item);
 }
@@ -84,9 +88,10 @@ formulario.addEventListener("submit", (event) => {
     const mensagem = document.getElementById("mensagem");
     mensagem.textContent = "✨ Nova movimentação adicionada com sucesso.";
 
+    // Limpa os campos do formulário
     document.getElementById("descricao").value = "";
     document.getElementById("valor").value = "";
-    document.getElementById("categoria").value = "Receita (Geral)"; // Reseta para a primeira opção
+    document.getElementById("categoria").value = "Salário"; // Reseta para a primeira opção
 });
 
 function salvarTransacoes() {
