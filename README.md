@@ -10,7 +10,7 @@ O **Kanban Financeiro** nasceu da necessidade de transformar o controle de despe
 
 ## 📸 Demonstração
 
-*(Dica: Adicione aqui uma imagem ou um GIF mostrando a tela do projeto, o efeito do Dark Mode ou você inserindo uma transação)*
+<img width="1586" height="729" alt="Captura de tela 2026-06-09 115438" src="https://github.com/user-attachments/assets/030e234e-8fdd-4b14-b610-5105130baaa8" />
 ![Demonstração do Kanban Financeiro](seupathtaimagem.png)
 
 ---
