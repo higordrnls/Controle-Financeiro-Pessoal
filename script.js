@@ -64,15 +64,52 @@ function atualizarSaldo() {
         );
 }
 
+function ordenarTransacoes(lista) {
 
+    const cards =
+        Array.from(lista.children);
+
+    cards.sort((a, b) => {
+
+        const transacaoA =
+            JSON.parse(a.dataset.transacao);
+
+        const transacaoB =
+            JSON.parse(b.dataset.transacao);
+
+        if (
+            transacaoA.tipo !==
+            transacaoB.tipo
+        ) {
+
+            return transacaoA.tipo === "Entrada"
+                ? -1
+                : 1;
+        }
+
+        return new Date(transacaoA.data)
+            - new Date(transacaoB.data);
+
+    });
+
+    cards.forEach(card =>
+        lista.appendChild(card)
+    );
+}
 
 function criarItemTransacao(transacao) {
     if (!transacao.periodo) return;
-    const coluna =
-    criarColuna(transacao.periodo);
+    const coluna = criarColuna(transacao.periodo);
 
 const listaAlvo =
     coluna.querySelector(".trello-list");
+
+if (!listaAlvo) return;
+
+const card = document.createElement("li");
+
+card.dataset.transacao =
+    JSON.stringify(transacao);
     if (!listaAlvo) return;
 
     const card = document.createElement("li");
@@ -131,6 +168,13 @@ const listaAlvo =
             }
             inputData.replaceWith(spanData);
         };
+
+        card.dataset.transacao =
+    JSON.stringify(transacao);
+
+ordenarTransacoes(
+    card.closest(".trello-list")
+);
 
         inputData.addEventListener("blur", salvarEdicaoData);
         inputData.addEventListener("keydown", (e) => {
@@ -217,6 +261,13 @@ const listaAlvo =
             selectCategoria.replaceWith(spanTag);
         };
 
+        card.dataset.transacao =
+    JSON.stringify(transacao);
+
+ordenarTransacoes(
+    card.closest(".trello-list")
+);
+
         selectCategoria.addEventListener("blur", salvarEdicaoCategoria);
         selectCategoria.addEventListener("change", salvarEdicaoCategoria);
 
@@ -252,6 +303,9 @@ const listaAlvo =
             }
             inputEdit.replaceWith(divValor);
         };
+
+        card.dataset.transacao =
+    JSON.stringify(transacao);
 
         inputEdit.addEventListener("blur", salvarEdicaoValor);
         inputEdit.addEventListener("keydown", (e) => {
@@ -294,6 +348,8 @@ const listaAlvo =
     });
     
     listaAlvo.appendChild(card);
+
+ordenarTransacoes(listaAlvo);
 }
 
 document.querySelectorAll(".trello-column").forEach(coluna => {
@@ -312,10 +368,11 @@ document.querySelectorAll(".trello-column").forEach(coluna => {
         
         const indiceTransacao = e.dataTransfer.getData("text/plain");
         const transacao = transacoes[indiceTransacao];
-        const novoMes = coluna.getAttribute("data-mes");
+        const novoPeriodo =
+    coluna.getAttribute("data-periodo");
 
-        if (transacao && transacao.periodo !== novoMes) {
-            transacao.periodo = novoMes;
+        if (transacao && transacao.periodo !== novoPeriodo){
+            transacao.periodo = novoPeriodo;
             salvarTransacoes();
             
             const listaInterna = coluna.querySelector(".trello-list");
@@ -453,6 +510,54 @@ function criarColuna(periodo) {
         <h3>${periodo}</h3>
         <ul class="trello-list"></ul>
     `;
+
+coluna.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    coluna.classList.add("coluna-destaque");
+});
+
+coluna.addEventListener("dragleave", () => {
+    coluna.classList.remove("coluna-destaque");
+});
+
+coluna.addEventListener("drop", (e) => {
+    e.preventDefault();
+    coluna.classList.remove("coluna-destaque");
+
+    const indiceTransacao =
+        e.dataTransfer.getData("text/plain");
+
+    const transacao =
+        transacoes[indiceTransacao];
+
+    const novoPeriodo =
+        coluna.dataset.periodo;
+
+    if (transacao) {
+
+        transacao.periodo =
+            novoPeriodo;
+
+        salvarTransacoes();
+
+        const listaInterna =
+            coluna.querySelector(".trello-list");
+
+        const cardSendoArrastado =
+            document.querySelector(".arrastando");
+
+        if (cardSendoArrastado) {
+
+            listaInterna.appendChild(
+                cardSendoArrastado
+            );
+
+            ordenarTransacoes(listaInterna);
+        }
+
+        atualizarSaldo();
+    }
+});
 
     board.appendChild(coluna);
 
