@@ -11,7 +11,6 @@ O **Kanban Financeiro** nasceu da necessidade de transformar o controle de despe
 ## 📸 Demonstração
 
 <img width="1586" height="729" alt="Captura de tela 2026-06-09 115438" src="https://github.com/user-attachments/assets/030e234e-8fdd-4b14-b610-5105130baaa8" />
-![Demonstração do Kanban Financeiro](seupathtaimagem.png)
 
 ---
 
@@ -38,10 +37,4 @@ A arquitetura do projeto foi desenhada utilizando tecnologias nativas da web (**
 
 ---
 
-## 📦 Como Executar o Projeto
-
-Como o projeto foi desenvolvido com tecnologias client-side puras, você não precisa instalar nenhuma dependência (como Node.js). 
-
-1. Clone este repositório em sua máquina:
-   ```bash
-   git clone https://github.com/higordrnls/Kanban-Financeiro
+## 📦 Clone este repositório em sua máquina
