@@ -249,6 +249,10 @@ select:focus {
     display: block;
 }
 
+.card-title .editavel {
+    display: inline-block;
+}
+
 .card-tag {
     display: inline-block;
     font-size: 0.75rem;
@@ -350,4 +354,47 @@ select:focus {
 .trello-column.coluna-destaque {
     background: var(--borda);
     border: 2px dashed var(--borda-foco);
+}
+
+/* ==========================================================================
+   MELHORIAS DE RESPONSIVIDADE (MOBILE EXPERT ADJUSTMENTS)
+   ========================================================================== */
+@media (max-width: 768px) {
+    body {
+        padding-top: 80px; /* Garante que o conteúdo não nasça embaixo do botão do tema */
+    }
+
+    /* Solução do Botão por cima do Título: deixa ele fixo e amigável no topo */
+    .btn-theme {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        z-index: 9999;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+        margin-top: 10px;
+    }
+
+    /* Solução dos campos de Data do Mobile (Android e iOS) */
+    input[type="date"] {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none; /* Quebra as regras nativas feias do celular */
+        min-height: 43px; /* Normaliza a altura vertical em relação aos outros inputs */
+        
+        /* Aplica um ícone discreto e universal de calendário via SVG */
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%235e6c84" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>');
+        background-repeat: no-repeat;
+        background-position: right 14px center;
+        padding-right: 40px;
+    }
+    
+    /* Conserta pequenos bugs de desalinhamento de inputs inline na edição mobile */
+    .input-edicao-data {
+        min-height: auto !important;
+        background-image: none !important;
+        padding-right: 4px !important;
+    }
 }
