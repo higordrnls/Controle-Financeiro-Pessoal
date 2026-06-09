@@ -11,11 +11,28 @@ const todasCategorias = [
     "Saúde", "Transporte por App", "Transporte Público", "Viagens"
 ];
 
-const mapeamentoMeses = {
-    "01": "Janeiro", "02": "Fevereiro", "03": "Março", "04": "Abril",
-    "05": "Maio", "06": "Junho", "07": "Julho", "08": "Agosto",
-    "09": "Setembro", "10": "Outubro", "11": "Novembro", "12": "Dezembro"
-};
+function obterPeriodo(dataString) {
+
+    const data = new Date(dataString);
+
+    const meses = [
+        "Janeiro",
+        "Fevereiro",
+        "Março",
+        "Abril",
+        "Maio",
+        "Junho",
+        "Julho",
+        "Agosto",
+        "Setembro",
+        "Outubro",
+        "Novembro",
+        "Dezembro"
+    ];
+
+    return `${meses[data.getMonth()]} ${data.getFullYear()}`;
+
+}
 
 function descobrirMesPorData(dataString) {
     if (!dataString) return "Janeiro";
@@ -59,7 +76,11 @@ if (seletorSaldoMes) {
 
 function criarItemTransacao(transacao) {
     if (!transacao.mes) return;
-    const listaAlvo = document.getElementById(`lista-${transacao.mes.toLowerCase()}`);
+    const coluna =
+    criarColuna(transacao.periodo);
+
+const listaAlvo =
+    coluna.querySelector(".trello-list");
     if (!listaAlvo) return;
 
     const card = document.createElement("li");
@@ -324,17 +345,17 @@ if (formulario) {
             return; 
         }
 
-        const mes = descobrirMesPorData(data);
+        const periodo = obterPeriodo(data);
         const tipo = descobrirTipoPorCategoria(categoria);
 
         const transacao = {
-            tipo,
-            categoria,
-            mes,
-            data,
-            descricao, // Fica vazio sem problemas na tela se não digitado
-            valor
-        };
+        tipo,
+        categoria,
+        periodo,
+        data,
+        descricao,
+    valor
+};
 
         transacoes.push(transacao);
         salvarTransacoes();
@@ -402,3 +423,35 @@ btnAlternarTema.addEventListener('click', () => {
         localStorage.setItem('tema', 'light');
     }
 });
+
+function criarColuna(periodo) {
+
+    const board =
+        document.getElementById("board");
+
+    let colunaExistente =
+        document.querySelector(
+            `[data-periodo="${periodo}"]`
+        );
+
+    if (colunaExistente) {
+        return colunaExistente;
+    }
+
+    const coluna =
+        document.createElement("div");
+
+    coluna.classList.add("trello-column");
+
+    coluna.dataset.periodo = periodo;
+
+    coluna.innerHTML = `
+        <h3>${periodo}</h3>
+        <ul class="trello-list"></ul>
+    `;
+
+    board.appendChild(coluna);
+
+    return coluna;
+
+}
