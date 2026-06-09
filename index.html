@@ -2,19 +2,19 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="content-language" content="pt-br">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro Pessoal</title>
+    <title>Controle Financeiro Inteligente</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <button id="alternar-tema" class="btn-theme">🌓 Alternar Tema</button>
+
     <div class="container">
 
-        <h1>Controle Financeiro Pessoal</h1>
+        <h1>Controle Financeiro</h1>
 
         <form class="card" id="form-transacao">
-
             <select id="categoria">
                 <option value="Salário">Salário</option>
                 <option value="Freelance">Freelance</option>
@@ -39,26 +39,50 @@
                 <option value="Viagens">Viagens</option>
             </select>
 
-            <input type="date" id="data">
+            <input type="date" id="data" required>
+            <input type="text" id="descricao" placeholder="Descrição (Ex: Uber, Atacadão...)">
+            <input type="text" id="valor" placeholder="Ex: 600,50" required>
 
-            <input type="text" id="descricao" placeholder="Descrição (Ex: Uber, Salário Quinzenal...)">
-
-            <input type="text" id="valor" placeholder="Ex: 600,50">
-
-            <button id="adicionar">Adicionar</button>
-
+            <button type="submit" id="btn-adicionar">Adicionar transação</button>
             <p id="mensagem"></p>
-
         </form>
 
-        <div class="card">
+        <div class="card card-saldo">
             <h2>Saldo Atual</h2>
             <p id="saldo">R$ 0,00</p>
+            
+            <div class="filtro-mes-container">
+                <label for="ver-saldo-mes">Visualizando:</label>
+                <select id="ver-saldo-mes" class="select-filtro-clean">
+                    <option value="Janeiro">Janeiro</option>
+                    <option value="Fevereiro">Fevereiro</option>
+                    <option value="Março">Março</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Maio">Maio</option>
+                    <option value="Junho">Junho</option>
+                    <option value="Julho">Julho</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Setembro">Setembro</option>
+                    <option value="Outubro">Outubro</option>
+                    <option value="Novembro">Novembro</option>
+                    <option value="Dezembro">Dezembro</option>
+                </select>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>Movimentações</h2>
-            <ul id="lista-transacoes"></ul>
+        <div class="trello-board">
+            <div class="trello-column" data-mes="Janeiro"><h3>Janeiro</h3><ul id="lista-janeiro" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Fevereiro"><h3>Fevereiro</h3><ul id="lista-fevereiro" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Março"><h3>Março</h3><ul id="lista-março" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Abril"><h3>Abril</h3><ul id="lista-abril" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Maio"><h3>Maio</h3><ul id="lista-maio" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Junho"><h3>Junho</h3><ul id="lista-junho" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Julho"><h3>Julho</h3><ul id="lista-julho" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Agosto"><h3>Agosto</h3><ul id="lista-agosto" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Setembro"><h3>Setembro</h3><ul id="lista-setembro" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Outubro"><h3>Outubro</h3><ul id="lista-outubro" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Novembro"><h3>Novembro</h3><ul id="lista-novembro" class="trello-list"></ul></div>
+            <div class="trello-column" data-mes="Dezembro"><h3>Dezembro</h3><ul id="lista-dezembro" class="trello-list"></ul></div>
         </div>
 
     </div>

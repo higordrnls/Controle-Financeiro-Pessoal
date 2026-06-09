@@ -1,3 +1,52 @@
+/* ==========================================================================
+   PALETA DE CORES (VARIÁVEIS)
+   ========================================================================== */
+:root {
+    --bg-body: #e9ecef;
+    --bg-card: #ffffff;
+    --bg-coluna: #ebecf0;
+    --bg-input: #fafbfc;
+    --bg-input-focus: #ffffff;
+    
+    --texto-principal: #172b4d;
+    --texto-secundario: #5e6c84;
+    --texto-titulo: #091e42;
+    
+    --borda: #dfe1e6;
+    --borda-foco: #0079bf;
+    --sombra: rgba(9, 30, 66, 0.08);
+    --sombra-card: rgba(9, 30, 66, 0.25);
+    
+    --cor-botao: #0079bf;
+    --cor-botao-hover: #026aa7;
+    --texto-botao: #ffffff;
+}
+
+/* Quando o body tiver a classe .dark, o CSS automaticamente vira a chave das cores */
+body.dark {
+    --bg-body: #0d1117;
+    --bg-card: #161b22;
+    --bg-coluna: #21262d;
+    --bg-input: #0d1117;
+    --bg-input-focus: #161b22;
+    
+    --texto-principal: #c9d1d9;
+    --texto-secundario: #8b949e;
+    --texto-titulo: #f0f6fc;
+    
+    --borda: #30363d;
+    --borda-foco: #58a6ff;
+    --sombra: rgba(0, 0, 0, 0.5);
+    --sombra-card: rgba(0, 0, 0, 0.6);
+    
+    --cor-botao: #21262d;
+    --cor-botao-hover: #30363d;
+    --texto-botao: #c9d1d9;
+}
+
+/* ==========================================================================
+   ESTRUTURA E LAYOUT (SEU LAYOUT ORIGINAL ADAPTADO ÀS VARIÁVEIS)
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -5,95 +54,300 @@
 }
 
 body {
-    background: #f3f4f6;
-    font-family: Arial, sans-serif;
-    padding: 40px;
-    color: #1f2937;
+    background: var(--bg-body);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 30px 20px;
+    color: var(--texto-principal);
+    transition: background 0.3s ease, color 0.3s ease; /* Transição suave ao mudar de tema */
+}
+
+/* Botão de Alternar Tema (Fica no topo) */
+.btn-theme {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: auto !important;
+    padding: 8px 12px !important;
+    background: var(--bg-card) !important;
+    color: var(--texto-principal) !important;
+    border: 1px solid var(--borda) !important;
+    font-size: 0.85rem !important;
+    border-radius: 6px !important;
+    box-shadow: 0 2px 4px var(--sombra);
 }
 
 .container {
-    max-width: 700px;
+    max-width: 850px;
     margin: auto;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 24px;
+    color: var(--texto-titulo);
+    font-weight: 700;
 }
 
 .card {
-    background: white;
+    background: var(--bg-card);
     padding: 20px;
-    border-radius: 16px;
+    border-radius: 12px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 8px var(--sombra);
+    border: 1px solid var(--borda);
+}
+
+.card-saldo {
+    text-align: center;
+    border-left: 6px solid var(--borda-foco);
+}
+
+.card-saldo h2 {
+    font-size: 1rem;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+}
+
+#saldo {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--texto-titulo);
+    margin-bottom: 10px;
+}
+
+.filtro-mes-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--texto-secundario);
+}
+
+.select-filtro-clean {
+    width: auto !important;
+    margin-bottom: 0 !important;
+    padding: 4px 10px !important;
+    border: 1px solid var(--borda) !important;
+    background-color: var(--bg-body) !important;
+    color: var(--texto-principal) !important;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 input,
 select {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid #d1d5db;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    border: 2px solid var(--borda);
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    background-color: var(--bg-input);
+    color: var(--texto-principal);
+    transition: all 0.2s ease;
 }
 
 input:focus,
 select:focus {
     outline: none;
-    border-color: #2563eb;
+    border-color: var(--borda-foco);
+    background-color: var(--bg-input-focus);
 }
 
-button {
+/* Botão principal de enviar transação */
+#btn-adicionar {
     width: 100%;
     padding: 12px;
     border: none;
     border-radius: 8px;
-    background: #2563eb;
-    color: white;
+    background: var(--cor-botao);
+    color: var(--texto-botao);
     font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.2s ease;
 }
 
-button:hover {
-    transform: translateY(-1px);
-}
-
-#saldo {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #16a34a;
+#btn-adicionar:hover {
+    background: var(--cor-botao-hover);
 }
 
 #mensagem {
-    margin-top: 10px;
     text-align: center;
-    color: #16a34a;
+    margin-top: 10px;
     font-size: 0.9rem;
+    color: #00875a;
 }
 
-ul {
-    list-style: none;
-}
-
-li {
+/* Quadro Kanban Horizontal */
+.trello-board {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    overflow-x: auto;
+    gap: 16px;
+    padding-bottom: 15px;
+}
 
+.trello-column {
+    min-width: 280px;
+    background: var(--bg-coluna);
+    padding: 12px;
+    border-radius: 10px;
+    vertical-align: top;
+    box-shadow: 0 1px 3px var(--sombra);
+    border: 1px solid var(--borda);
+}
+
+.trello-column h3 {
+    font-size: 1.1rem;
+    color: var(--texto-principal);
+    margin-bottom: 12px;
+    padding-left: 4px;
+}
+
+.trello-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Seus Cartões Fluidos Originais Intactos */
+.trello-card-item {
+    background: var(--bg-card);
     padding: 12px;
     margin-bottom: 8px;
-
-    background: #f9fafb;
-
     border-radius: 8px;
+    box-shadow: 0 1px 2px var(--sombra-card);
+    display: block;
+    position: relative;
+    border-left: 5px solid var(--borda);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease;
 }
 
-li button {
+.trello-card-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px var(--sombra-card);
+}
+
+.card-main-content {
+    margin-right: 25px;
+}
+
+.card-date {
+    font-size: 0.75rem;
+    color: var(--texto-secundario);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.card-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--texto-principal);
+    display: block;
+}
+
+.card-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 6px;
+}
+
+.card-value {
+    float: right;
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-top: -18px;
+    color: var(--texto-principal);
+}
+
+/* O botão 'x' de volta ao topo direito sem quebrar nada */
+.btn-excluir-card {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none !important;
+    border: none !important;
+    padding: 4px !important;
+    width: auto !important;
+    font-size: 0.85rem !important;
+    color: var(--texto-secundario);
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+}
+
+.btn-excluir-card:hover {
+    opacity: 1;
+}
+
+/* Estilos para a funcionalidade de Edição Inline */
+.editavel {
+    cursor: pointer;
+    border-bottom: 1px dashed var(--borda);
+    transition: background-color 0.2s ease;
+}
+
+.editavel:hover {
+    background-color: var(--bg-coluna);
+    border-bottom-color: var(--borda-foco);
+}
+
+.input-edicao,
+.input-edicao-valor,
+.input-edicao-data,
+.select-edicao-tag {
+    border: 2px solid var(--borda-foco) !important;
+    border-radius: 4px;
+    background: var(--bg-card) !important;
+    color: var(--texto-principal) !important;
+    margin-bottom: 0 !important;
+    font-family: inherit;
+}
+
+.input-edicao {
+    width: 100%;
+    padding: 2px 4px;
+    font-size: 0.95rem;
+}
+
+.input-edicao-valor {
+    width: 80px;
+    float: right;
+    margin-top: -22px;
+    padding: 2px 4px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    text-align: right;
+}
+
+.input-edicao-data {
+    font-size: 0.75rem;
+    padding: 2px;
+    margin-bottom: 4px;
     width: auto;
-    background: transparent;
-    padding: 0;
-    font-size: 1rem;
+}
+
+.select-edicao-tag {
+    font-size: 0.75rem;
+    padding: 2px;
+    margin-top: 6px;
+    width: auto;
+    display: inline-block;
+}
+
+/* Efeitos visuais do Drag and Drop */
+.trello-card-item.arrastando {
+    opacity: 0.5;
+    border: 2px dashed var(--borda-foco);
+}
+
+.trello-column.coluna-destaque {
+    background: var(--borda);
+    border: 2px dashed var(--borda-foco);
 }
