@@ -1,95 +1,47 @@
-# 💰 Kanban Financeiro
+# 💰 Kanban Financeiro Inteligente
 
-Aplicação web desenvolvida com HTML, CSS e JavaScript para gerenciamento financeiro pessoal, inspirada na experiência visual e organizacional do Trello.
+> Aplicação web intuitiva para gerenciamento financeiro pessoal, inspirada na organização visual e na dinâmica de quadros estilo Trello/Kanban.
 
-O objetivo do projeto é oferecer uma forma simples, intuitiva e visual de acompanhar receitas, despesas e movimentações financeiras ao longo dos meses.
+O **Kanban Financeiro** nasceu da necessidade de transformar o controle de despesas e receitas — que geralmente é feito em planilhas complexas — em uma experiência visual, fluida e de fácil entendimento. O projeto foca no acompanhamento mensal inteligente, permitindo uma visão clara da saúde financeira do usuário.
+
+🔗 **[Acesse a aplicação no ar aqui]** *[(Substitua pelo link do seu GitHub Pages depois de fazer o deploy)](https://higordrnls.github.io/Kanban-Financeiro/)*
 
 ---
 
-## 🚀 Funcionalidades
+## 📸 Demonstração
 
-### Gestão Financeira
+*(Dica: Adicione aqui uma imagem ou um GIF mostrando a tela do projeto, o efeito do Dark Mode ou você inserindo uma transação)*
+![Demonstração do Kanban Financeiro](seupathtaimagem.png)
 
-* Cadastro de receitas e despesas
-* Registro da data da movimentação
-* Classificação automática por categoria
-* Cálculo automático do saldo mensal
-* Exclusão de transações
-* Edição rápida diretamente nos cartões
+---
 
-### Organização Visual
+## 🚀 Funcionalidades Principais
 
-* Quadro financeiro inspirado em Kanban/Trello
-* Separação das movimentações por mês
-* Arrastar e soltar transações entre colunas
-* Visualização rápida dos lançamentos
-
-### Persistência de Dados
-
-* Armazenamento local utilizando Local Storage
-* Recuperação automática das informações após atualizar ou fechar o navegador
-* Persistência das preferências do usuário
-
-### Experiência do Usuário
-
-* Dark Mode
-* Interface responsiva
-* Formatação monetária brasileira (R$)
-* Feedback visual para ações realizadas
+* **Organização Visual (Estilo Trello):** Visualização de movimentações estruturadas em colunas e cartões dinâmicos, simulando um quadro Kanban.
+* **Filtro Dinâmico por Período:** Seleção e visualização simplificada do saldo e das transações correspondentes ao mês selecionado.
+* **Persistência de Dados (`localStorage`):** Os dados não somem ao atualizar a página (`F5`). Toda a movimentação e preferências ficam salvas localmente no navegador.
+* **Cálculo Automático de Saldo:** Processamento instantâneo de receitas e despesas com atualização automática do saldo atual em formato de moeda brasileira (R$).
+* **Experiência do Usuário (UX):** * Alternância rápida de temas (Dark Mode / Light Mode).
+    * Tratamento de entradas numéricas (aceita pontos ou vírgulas para centavos).
+    * Campos obrigatórios com validação nativa.
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
-* HTML5
-* CSS3
-* JavaScript (Vanilla JS)
-* Local Storage API
-* Drag and Drop API
+A arquitetura do projeto foi desenhada utilizando tecnologias nativas da web (**Vanilla JS**), priorizando desempenho, sem dependências ou frameworks externos:
+
+* **HTML5:** Estruturação semântica e acessível da interface.
+* **CSS3:** Estilização moderna baseada em variáveis CSS (para o sistema de temas) e layouts flexíveis/responsivos.
+* **JavaScript (Vanilla JS):** Manipulação limpa do DOM, gerenciamento de estados e controle do fluxo de dados.
+* **Web Storage API (`localStorage`):** Persistência de dados local segura e sem necessidade de backend.
 
 ---
 
-## 📸 Principais Recursos
+## 📦 Como Executar o Projeto
 
-* ✅ Controle de receitas e despesas
-* ✅ Categorias financeiras
-* ✅ Saldo mensal dinâmico
-* ✅ Edição inline
-* ✅ Drag and Drop entre meses
-* ✅ Persistência de dados
-* ✅ Dark Mode
+Como o projeto foi desenvolvido com tecnologias client-side puras, você não precisa instalar nenhuma dependência (como Node.js). 
 
----
-
-## 📚 Aprendizados
-
-Durante o desenvolvimento deste projeto foram aplicados conceitos de:
-
-* Manipulação do DOM
-* Eventos
-* Arrays e Objetos
-* Funções
-* Persistência de dados
-* Programação orientada a componentes visuais
-* Estruturação de interfaces inspiradas em produtos reais
-* Organização de código JavaScript
-
----
-
-## 🔮 Próximas Funcionalidades
-
-* Dashboard financeiro
-* Gráficos de gastos por categoria
-* Filtros por período
-* Relatórios mensais
-* Exportação para CSV
-* Upload de comprovantes
-* Integração com Open Finance (estudo futuro)
-
----
-
-## 👨‍💻 Autor
-
-**Higor Dornelas**
-
-Projeto desenvolvido como parte da minha transição de carreira para a área de tecnologia, aplicando conceitos de desenvolvimento web e construção de produtos digitais.
+1. Clone este repositório em sua máquina:
+   ```bash
+   git clone https://github.com/higordrnls/Kanban-Financeiro

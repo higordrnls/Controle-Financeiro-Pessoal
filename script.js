@@ -10,6 +10,11 @@ const todasCategorias = [
     "Saúde", "Transporte por App", "Transporte Público", "Viagens"
 ];
 
+const listaMesesRef = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+];
+
 // Escuta mudanças no seletor de períodos
 document.addEventListener("change", (e) => {
     if (e.target.id === "ver-saldo-periodo") {
@@ -20,11 +25,45 @@ document.addEventListener("change", (e) => {
 function obterPeriodo(dataString) {
     if (!dataString) return "";
     const data = new Date(dataString + "T00:00:00"); // Força o fuso horário local correto
-    const meses = [
-        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-    ];
-    return `${meses[data.getMonth()]} ${data.getFullYear()}`;
+    return `${listaMesesRef[data.getMonth()]} ${data.getFullYear()}`;
+}
+
+// Função auxiliar para ordenar períodos cronologicamente (Trata "Mês Ano")
+function ordenarPeriodos(arrayDePeriodos) {
+    return arrayDePeriodos.sort((a, b) => {
+        const [mesA, anoA] = a.split(" ");
+        const [mesB, anoB] = b.split(" ");
+
+        if (anoA !== anoB) {
+            return Number(anoA) - Number(anoB);
+        }
+
+        return listaMesesRef.indexOf(mesA) - listaMesesRef.indexOf(mesB);
+    });
+}
+
+// Reorganiza fisicamente as colunas do board na tela seguindo a ordem cronológica
+function ordenarColunasNoBoard() {
+    const board = document.getElementById("board");
+    if (!board) return;
+
+    const colunas = Array.from(board.querySelectorAll(".trello-column"));
+    
+    colunas.sort((a, b) => {
+        const periodoA = a.dataset.periodo;
+        const periodoB = b.dataset.periodo;
+        
+        const [mesA, anoA] = periodoA.split(" ");
+        const [mesB, anoB] = periodoB.split(" ");
+
+        if (anoA !== anoB) {
+            return Number(anoA) - Number(anoB);
+        }
+        return listaMesesRef.indexOf(mesA) - listaMesesRef.indexOf(mesB);
+    });
+
+    // Reanexa as colunas já ordenadas ao DOM do board
+    colunas.forEach(coluna => board.appendChild(coluna));
 }
 
 function descobrirTipoPorCategoria(categoria) {
@@ -424,7 +463,7 @@ function carregarTransacoes() {
             criarItemTransacao(transacao);
         }
     } catch (e) {
-        console.error("Erro ao carregar dados locais:", e);
+        console.error("Erro ao carregar dados locales:", e);
     }
 
     atualizarSaldo();
@@ -484,6 +523,10 @@ function criarColuna(periodo) {
     });
 
     board.appendChild(coluna);
+    
+    // O PULO DO GATO: Reordena as colunas fisicamente após a adição de uma nova
+    ordenarColunasNoBoard();
+    
     return coluna;
 }
 
@@ -494,7 +537,10 @@ function atualizarFiltroPeriodos() {
     // Pega o valor que estava selecionado antes de atualizar, pra não perder a seleção do usuário
     const valorAtual = seletor.value;
 
-    const periodos = [...new Set(transacoes.map(t => t.periodo))];
+    let periodos = [...new Set(transacoes.map(t => t.periodo))];
+
+    // O PULO DO GATO: Ordena cronologicamente os períodos antes de preencher o select
+    periodos = ordenarPeriodos(periodos);
 
     seletor.innerHTML = "";
 
