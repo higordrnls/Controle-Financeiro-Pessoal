@@ -10,159 +10,84 @@ const todasCategorias = [
     "Saúde", "Transporte por App", "Transporte Público", "Viagens"
 ];
 
-document.addEventListener(
-    "change",
-    (e) => {
-
-        if (
-            e.target.id ===
-            "ver-saldo-periodo"
-        ) {
-
-            atualizarSaldo();
-
-        }
-
+// Escuta mudanças no seletor de períodos
+document.addEventListener("change", (e) => {
+    if (e.target.id === "ver-saldo-periodo") {
+        atualizarSaldo();
     }
-);
+});
 
 function obterPeriodo(dataString) {
-
-    const data = new Date(dataString);
-
+    if (!dataString) return "";
+    const data = new Date(dataString + "T00:00:00"); // Força o fuso horário local correto
     const meses = [
-        "Janeiro",
-        "Fevereiro",
-        "Março",
-        "Abril",
-        "Maio",
-        "Junho",
-        "Julho",
-        "Agosto",
-        "Setembro",
-        "Outubro",
-        "Novembro",
-        "Dezembro"
+        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
-
     return `${meses[data.getMonth()]} ${data.getFullYear()}`;
-
 }
-
-const seletorSaldoPeriodo =
-    document.getElementById("ver-saldo-periodo");
 
 function descobrirTipoPorCategoria(categoria) {
     return categoriasReceita.includes(categoria) ? "Entrada" : "Saída";
 }
 
 function atualizarSaldo() {
-
-    const seletor =
-        document.getElementById(
-            "ver-saldo-periodo"
-        );
-
+    const seletor = document.getElementById("ver-saldo-periodo");
     if (!seletor) return;
 
-    const periodoSelecionado =
-        seletor.value;
-
+    const periodoSelecionado = seletor.value;
     let saldo = 0;
 
     transacoes.forEach(transacao => {
-
-        if (
-            transacao.periodo !==
-            periodoSelecionado
-        ) {
+        if (transacao.periodo !== periodoSelecionado) {
             return;
         }
 
-        if (
-            transacao.tipo ===
-            "Entrada"
-        ) {
-
-            saldo +=
-                Number(
-                    transacao.valor
-                );
-
+        if (transacao.tipo === "Entrada") {
+            saldo += Number(transacao.valor);
         } else {
-
-            saldo -=
-                Number(
-                    transacao.valor
-                );
-
+            saldo -= Number(transacao.valor);
         }
-
     });
 
-    document.getElementById("saldo")
-        .textContent =
-        saldo.toLocaleString(
-            "pt-BR",
-            {
-                style: "currency",
-                currency: "BRL"
-            }
-        );
-
+    const elementoSaldo = document.getElementById("saldo");
+    if (elementoSaldo) {
+        elementoSaldo.textContent = saldo.toLocaleString("pt-BR", {
+            style: "currency",
+            currency: "BRL"
+        });
+    }
 }
 
 function ordenarTransacoes(lista) {
-
-    const cards =
-        Array.from(lista.children);
+    if (!lista) return;
+    const cards = Array.from(lista.children);
 
     cards.sort((a, b) => {
+        const transacaoA = JSON.parse(a.dataset.transacao);
+        const transacaoB = JSON.parse(b.dataset.transacao);
 
-        const transacaoA =
-            JSON.parse(a.dataset.transacao);
-
-        const transacaoB =
-            JSON.parse(b.dataset.transacao);
-
-        if (
-            transacaoA.tipo !==
-            transacaoB.tipo
-        ) {
-
-            return transacaoA.tipo === "Entrada"
-                ? -1
-                : 1;
+        if (transacaoA.tipo !== transacaoB.tipo) {
+            return transacaoA.tipo === "Entrada" ? -1 : 1;
         }
 
-        return new Date(transacaoA.data)
-            - new Date(transacaoB.data);
-
+        return new Date(transacaoA.data) - new Date(transacaoB.data);
     });
 
-    cards.forEach(card =>
-        lista.appendChild(card)
-    );
+    cards.forEach(card => lista.appendChild(card));
 }
 
 function criarItemTransacao(transacao) {
     if (!transacao.periodo) return;
     const coluna = criarColuna(transacao.periodo);
-
-const listaAlvo =
-    coluna.querySelector(".trello-list");
-
-if (!listaAlvo) return;
-
-const card = document.createElement("li");
-
-card.dataset.transacao =
-    JSON.stringify(transacao);
+    const listaAlvo = coluna.querySelector(".trello-list");
     if (!listaAlvo) return;
 
+    // DEFINIÇÃO ÚNICA E CORRETA DO CARD
     const card = document.createElement("li");
     card.classList.add("trello-card-item");
     card.draggable = true; 
+    card.dataset.transacao = JSON.stringify(transacao);
     
     card.style.borderLeftColor = transacao.tipo === "Entrada" ? "#61bd4f" : "#ec9488";
 
@@ -189,40 +114,33 @@ card.dataset.transacao =
         inputData.classList.add("input-edicao-data");
 
         const salvarEdicaoData = () => {
-            if (inputData.value) {
+            if (inputData.value && inputData.value !== transacao.data) {
+                const antigoPeriodo = transacao.periodo;
+                const novoPeriodo = obterPeriodo(inputData.value);
+                
                 transacao.data = inputData.value;
+                transacao.periodo = novoPeriodo;
                 spanData.textContent = formatarDataTela(inputData.value);
                 
-                const novoPeriodo =
-    obterPeriodo(inputData.value);
-                if (transacao.periodo !== novoPeriodo) {
+                card.dataset.transacao = JSON.stringify(transacao);
 
-    transacao.periodo = novoPeriodo;
-
-    const novaColuna =
-        criarColuna(novoPeriodo);
-
-    const novaLista =
-        novaColuna.querySelector(
-            ".trello-list"
-        );
-
-    novaLista.appendChild(card);
-
-}
+                if (antigoPeriodo !== novoPeriodo) {
+                    const novaColuna = criarColuna(novoPeriodo);
+                    const novaLista = novaColuna.querySelector(".trello-list");
+                    if (novaLista) {
+                        novaLista.appendChild(card);
+                        ordenarTransacoes(novaLista);
+                    }
+                    atualizarFiltroPeriodos();
+                } else {
+                    ordenarTransacoes(card.closest(".trello-list"));
+                }
                 
                 salvarTransacoes();
                 atualizarSaldo();
             }
             inputData.replaceWith(spanData);
         };
-
-        card.dataset.transacao =
-    JSON.stringify(transacao);
-
-ordenarTransacoes(
-    card.closest(".trello-list")
-);
 
         inputData.addEventListener("blur", salvarEdicaoData);
         inputData.addEventListener("keydown", (e) => {
@@ -249,6 +167,8 @@ ordenarTransacoes(
             const novoTexto = inputEdit.value.trim();
             transacao.descricao = novoTexto;
             spanDescricao.textContent = novoTexto;
+            
+            card.dataset.transacao = JSON.stringify(transacao);
             salvarTransacoes();
             inputEdit.replaceWith(spanDescricao);
         };
@@ -303,18 +223,14 @@ ordenarTransacoes(
                 card.style.borderLeftColor = novoTipo === "Entrada" ? "#61bd4f" : "#ec9488";
                 aplicarEstiloTag(spanTag, novoTipo);
                 
+                card.dataset.transacao = JSON.stringify(transacao);
+                
+                ordenarTransacoes(card.closest(".trello-list"));
                 salvarTransacoes();
                 atualizarSaldo();
             }
             selectCategoria.replaceWith(spanTag);
         };
-
-        card.dataset.transacao =
-    JSON.stringify(transacao);
-
-ordenarTransacoes(
-    card.closest(".trello-list")
-);
 
         selectCategoria.addEventListener("blur", salvarEdicaoCategoria);
         selectCategoria.addEventListener("change", salvarEdicaoCategoria);
@@ -346,14 +262,13 @@ ordenarTransacoes(
                     style: "currency",
                     currency: "BRL"
                 });
+                
+                card.dataset.transacao = JSON.stringify(transacao);
                 salvarTransacoes();
                 atualizarSaldo();
             }
             inputEdit.replaceWith(divValor);
         };
-
-        card.dataset.transacao =
-    JSON.stringify(transacao);
 
         inputEdit.addEventListener("blur", salvarEdicaoValor);
         inputEdit.addEventListener("keydown", (e) => {
@@ -378,6 +293,7 @@ ordenarTransacoes(
             transacoes.splice(indice, 1);
             salvarTransacoes();
             card.remove();
+            atualizarFiltroPeriodos();
             atualizarSaldo();
         }
     });
@@ -396,10 +312,10 @@ ordenarTransacoes(
     });
     
     listaAlvo.appendChild(card);
-
-ordenarTransacoes(listaAlvo);
+    ordenarTransacoes(listaAlvo);
 }
 
+// Configuração inicial do Drag and Drop nas colunas existentes
 document.querySelectorAll(".trello-column").forEach(coluna => {
     coluna.addEventListener("dragover", (e) => {
         e.preventDefault();
@@ -416,8 +332,7 @@ document.querySelectorAll(".trello-column").forEach(coluna => {
         
         const indiceTransacao = e.dataTransfer.getData("text/plain");
         const transacao = transacoes[indiceTransacao];
-        const novoPeriodo =
-    coluna.getAttribute("data-periodo");
+        const novoPeriodo = coluna.getAttribute("data-periodo");
 
         if (transacao && transacao.periodo !== novoPeriodo){
             transacao.periodo = novoPeriodo;
@@ -427,8 +342,11 @@ document.querySelectorAll(".trello-column").forEach(coluna => {
             const cardSendoArrastado = document.querySelector(".arrastando");
             if (cardSendoArrastado) {
                 listaInterna.appendChild(cardSendoArrastado);
+                cardSendoArrastado.dataset.transacao = JSON.stringify(transacao);
+                ordenarTransacoes(listaInterna);
             }
             
+            atualizarFiltroPeriodos();
             atualizarSaldo();
         }
     });
@@ -457,13 +375,13 @@ if (formulario) {
         const tipo = descobrirTipoPorCategoria(categoria);
 
         const transacao = {
-        tipo,
-        categoria,
-        periodo,
-        data,
-        descricao,
-    valor
-};
+            tipo,
+            categoria,
+            periodo,
+            data,
+            descricao,
+            valor
+        };
 
         transacoes.push(transacao);
         atualizarFiltroPeriodos();
@@ -473,8 +391,7 @@ if (formulario) {
 
         const mensagem = document.getElementById("mensagem");
         if (mensagem) {
-            mensagem.textContent =
-`✨ Adicionado com sucesso em ${periodo}!`;
+            mensagem.textContent = `✨ Adicionado com sucesso em ${periodo}!`;
         }
 
         document.getElementById("descricao").value = "";
@@ -500,6 +417,9 @@ function carregarTransacoes() {
         const transacoesConvertidas = JSON.parse(transacoesSalvas);
         transacoes.push(...transacoesConvertidas);
 
+        // Atualiza filtros primeiro antes de criar elementos
+        atualizarFiltroPeriodos();
+
         for (const transacao of transacoesConvertidas) {
             criarItemTransacao(transacao);
         }
@@ -510,50 +430,17 @@ function carregarTransacoes() {
     atualizarSaldo();
 }
 
-carregarTransacoes();
-
-// ==========================================================================
-// CONTROLE DO DARK MODE / MODO ESCURO
-// ==========================================================================
-const btnAlternarTema = document.getElementById('alternar-tema');
-
-// Verifica se o usuário já tinha uma preferência salva no localStorage
-const temaSalvo = localStorage.getItem('tema');
-if (temaSalvo === 'dark') {
-    document.body.classList.add('dark');
-}
-
-// Escuta o clique no botão para alternar o tema
-btnAlternarTema.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    
-    // Salva a nova escolha no localStorage para persistir no F5
-    if (document.body.classList.contains('dark')) {
-        localStorage.setItem('tema', 'dark');
-    } else {
-        localStorage.setItem('tema', 'light');
-    }
-});
-
 function criarColuna(periodo) {
+    const board = document.getElementById("board");
+    if (!board) return null;
 
-    const board =
-        document.getElementById("board");
-
-    let colunaExistente =
-        document.querySelector(
-            `[data-periodo="${periodo}"]`
-        );
-
+    let colunaExistente = document.querySelector(`[data-periodo="${periodo}"]`);
     if (colunaExistente) {
         return colunaExistente;
     }
 
-    const coluna =
-        document.createElement("div");
-
+    const coluna = document.createElement("div");
     coluna.classList.add("trello-column");
-
     coluna.dataset.periodo = periodo;
 
     coluna.innerHTML = `
@@ -561,90 +448,89 @@ function criarColuna(periodo) {
         <ul class="trello-list"></ul>
     `;
 
-coluna.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    coluna.classList.add("coluna-destaque");
-});
+    coluna.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        coluna.classList.add("coluna-destaque");
+    });
 
-coluna.addEventListener("dragleave", () => {
-    coluna.classList.remove("coluna-destaque");
-});
+    coluna.addEventListener("dragleave", () => {
+        coluna.classList.remove("coluna-destaque");
+    });
 
-coluna.addEventListener("drop", (e) => {
-    e.preventDefault();
-    coluna.classList.remove("coluna-destaque");
+    coluna.addEventListener("drop", (e) => {
+        e.preventDefault();
+        coluna.classList.remove("coluna-destaque");
 
-    const indiceTransacao =
-        e.dataTransfer.getData("text/plain");
+        const indiceTransacao = e.dataTransfer.getData("text/plain");
+        const transacao = transacoes[indiceTransacao];
+        const novoPeriodo = coluna.dataset.periodo;
 
-    const transacao =
-        transacoes[indiceTransacao];
+        if (transacao) {
+            transacao.periodo = novoPeriodo;
+            salvarTransacoes();
 
-    const novoPeriodo =
-        coluna.dataset.periodo;
+            const listaInterna = coluna.querySelector(".trello-list");
+            const cardSendoArrastado = document.querySelector(".arrastando");
 
-    if (transacao) {
+            if (cardSendoArrastado) {
+                listaInterna.appendChild(cardSendoArrastado);
+                cardSendoArrastado.dataset.transacao = JSON.stringify(transacao);
+                ordenarTransacoes(listaInterna);
+            }
 
-        transacao.periodo =
-            novoPeriodo;
-
-        salvarTransacoes();
-
-        const listaInterna =
-            coluna.querySelector(".trello-list");
-
-        const cardSendoArrastado =
-            document.querySelector(".arrastando");
-
-        if (cardSendoArrastado) {
-
-            listaInterna.appendChild(
-                cardSendoArrastado
-            );
-
-            ordenarTransacoes(listaInterna);
+            atualizarFiltroPeriodos();
+            atualizarSaldo();
         }
-
-        atualizarSaldo();
-    }
-});
+    });
 
     board.appendChild(coluna);
-
     return coluna;
-
 }
 
 function atualizarFiltroPeriodos() {
-
-    const seletor =
-        document.getElementById(
-            "ver-saldo-periodo"
-        );
-
+    const seletor = document.getElementById("ver-saldo-periodo");
     if (!seletor) return;
 
-    const periodos =
-        [...new Set(
-            transacoes.map(
-                t => t.periodo
-            )
-        )];
+    // Pega o valor que estava selecionado antes de atualizar, pra não perder a seleção do usuário
+    const valorAtual = seletor.value;
+
+    const periodos = [...new Set(transacoes.map(t => t.periodo))];
 
     seletor.innerHTML = "";
 
+    if (periodos.length === 0) {
+        const option = document.createElement("option");
+        option.textContent = "Nenhum período";
+        seletor.appendChild(option);
+        return;
+    }
+
     periodos.forEach(periodo => {
-
-        const option =
-            document.createElement(
-                "option"
-            );
-
+        const option = document.createElement("option");
         option.value = periodo;
         option.textContent = periodo;
-
+        if (periodo === valorAtual) option.selected = true;
         seletor.appendChild(option);
-
     });
-
 }
+
+// Inicialização do Dark Mode
+const btnAlternarTema = document.getElementById('alternar-tema');
+const temaSalvo = localStorage.getItem('tema');
+if (temaSalvo === 'dark') {
+    document.body.classList.add('dark');
+}
+
+if (btnAlternarTema) {
+    btnAlternarTema.addEventListener('click', () => {
+        document.body.classList.toggle('dark');
+        if (document.body.classList.contains('dark')) {
+            localStorage.setItem('tema', 'dark');
+        } else {
+            localStorage.setItem('tema', 'light');
+        }
+    });
+}
+
+// Executa a carga inicial dos dados
+carregarTransacoes();
