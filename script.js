@@ -10,6 +10,22 @@ const todasCategorias = [
     "Saúde", "Transporte por App", "Transporte Público", "Viagens"
 ];
 
+document.addEventListener(
+    "change",
+    (e) => {
+
+        if (
+            e.target.id ===
+            "ver-saldo-periodo"
+        ) {
+
+            atualizarSaldo();
+
+        }
+
+    }
+);
+
 function obterPeriodo(dataString) {
 
     const data = new Date(dataString);
@@ -33,7 +49,8 @@ function obterPeriodo(dataString) {
 
 }
 
-
+const seletorSaldoPeriodo =
+    document.getElementById("ver-saldo-periodo");
 
 function descobrirTipoPorCategoria(categoria) {
     return categoriasReceita.includes(categoria) ? "Entrada" : "Saída";
@@ -41,17 +58,47 @@ function descobrirTipoPorCategoria(categoria) {
 
 function atualizarSaldo() {
 
+    const seletor =
+        document.getElementById(
+            "ver-saldo-periodo"
+        );
+
+    if (!seletor) return;
+
+    const periodoSelecionado =
+        seletor.value;
+
     let saldo = 0;
 
-    for (const transacao of transacoes) {
+    transacoes.forEach(transacao => {
 
-        if (transacao.tipo === "Entrada") {
-            saldo += Number(transacao.valor);
-        } else {
-            saldo -= Number(transacao.valor);
+        if (
+            transacao.periodo !==
+            periodoSelecionado
+        ) {
+            return;
         }
 
-    }
+        if (
+            transacao.tipo ===
+            "Entrada"
+        ) {
+
+            saldo +=
+                Number(
+                    transacao.valor
+                );
+
+        } else {
+
+            saldo -=
+                Number(
+                    transacao.valor
+                );
+
+        }
+
+    });
 
     document.getElementById("saldo")
         .textContent =
@@ -62,6 +109,7 @@ function atualizarSaldo() {
                 currency: "BRL"
             }
         );
+
 }
 
 function ordenarTransacoes(lista) {
@@ -418,6 +466,7 @@ if (formulario) {
 };
 
         transacoes.push(transacao);
+        atualizarFiltroPeriodos();
         salvarTransacoes();
         atualizarSaldo();
         criarItemTransacao(transacao);
@@ -442,6 +491,7 @@ function carregarTransacoes() {
     const transacoesSalvas = localStorage.getItem("transacoes");
 
     if (!transacoesSalvas) {
+        atualizarFiltroPeriodos();
         atualizarSaldo();
         return;
     }
@@ -562,5 +612,39 @@ coluna.addEventListener("drop", (e) => {
     board.appendChild(coluna);
 
     return coluna;
+
+}
+
+function atualizarFiltroPeriodos() {
+
+    const seletor =
+        document.getElementById(
+            "ver-saldo-periodo"
+        );
+
+    if (!seletor) return;
+
+    const periodos =
+        [...new Set(
+            transacoes.map(
+                t => t.periodo
+            )
+        )];
+
+    seletor.innerHTML = "";
+
+    periodos.forEach(periodo => {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value = periodo;
+        option.textContent = periodo;
+
+        seletor.appendChild(option);
+
+    });
 
 }
