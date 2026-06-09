@@ -1,7 +1,5 @@
 # 💰 Kanban Financeiro Inteligente
 
-> Aplicação web intuitiva para gerenciamento financeiro pessoal, inspirada na organização visual e na dinâmica de quadros estilo Trello/Kanban.
-
 O **Kanban Financeiro** nasceu da necessidade de transformar o controle de despesas e receitas — que geralmente é feito em planilhas complexas — em uma experiência visual, fluida e de fácil entendimento. O projeto foca no acompanhamento mensal inteligente, permitindo uma visão clara da saúde financeira do usuário.
 
 🔗 **[Acesse a aplicação no ar aqui]** *(https://higordrnls.github.io/Kanban-Financeiro/)*
