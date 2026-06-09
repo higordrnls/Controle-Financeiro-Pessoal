@@ -2,7 +2,6 @@ const formulario = document.getElementById("form-transacao");
 const transacoes = [];
 
 const categoriasReceita = ["Salário", "Freelance", "Investimentos", "Outras Entradas"];
-const seletorSaldoMes = document.getElementById("ver-saldo-mes");
 
 const todasCategorias = [
     "Salário", "Freelance", "Investimentos", "Outras Entradas", "Assinaturas", 
@@ -34,48 +33,41 @@ function obterPeriodo(dataString) {
 
 }
 
-function descobrirMesPorData(dataString) {
-    if (!dataString) return "Janeiro";
-    const partes = dataString.split("-");
-    const mesNumero = partes[1]; 
-    return mapeamentoMeses[mesNumero] || "Janeiro";
-}
+
 
 function descobrirTipoPorCategoria(categoria) {
     return categoriasReceita.includes(categoria) ? "Entrada" : "Saída";
 }
 
 function atualizarSaldo() {
-    if (!seletorSaldoMes) return;
-    const mesSelecionado = seletorSaldoMes.value;
+
     let saldo = 0;
 
     for (const transacao of transacoes) {
-        if (transacao.mes === mesSelecionado) {
-            const valorNumerico = Number(transacao.valor) || 0;
-            if (transacao.tipo === "Entrada") {
-                saldo += valorNumerico;
-            } else {
-                saldo -= valorNumerico;
-            }
+
+        if (transacao.tipo === "Entrada") {
+            saldo += Number(transacao.valor);
+        } else {
+            saldo -= Number(transacao.valor);
         }
+
     }
 
-    const elementoSaldo = document.getElementById("saldo");
-    if (elementoSaldo) {
-        elementoSaldo.textContent = saldo.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        });
-    }
+    document.getElementById("saldo")
+        .textContent =
+        saldo.toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
 }
 
-if (seletorSaldoMes) {
-    seletorSaldoMes.addEventListener("change", atualizarSaldo);
-}
+
 
 function criarItemTransacao(transacao) {
-    if (!transacao.mes) return;
+    if (!transacao.periodo) return;
     const coluna =
     criarColuna(transacao.periodo);
 
@@ -116,12 +108,23 @@ const listaAlvo =
                 transacao.data = inputData.value;
                 spanData.textContent = formatarDataTela(inputData.value);
                 
-                const novoMes = descobrirMesPorData(inputData.value);
-                if (transacao.mes !== novoMes) {
-                    transacao.mes = novoMes;
-                    const novaLista = document.getElementById(`lista-${novoMes.toLowerCase()}`);
-                    if (novaLista) novaLista.appendChild(card);
-                }
+                const novoPeriodo =
+    obterPeriodo(inputData.value);
+                if (transacao.periodo !== novoPeriodo) {
+
+    transacao.periodo = novoPeriodo;
+
+    const novaColuna =
+        criarColuna(novoPeriodo);
+
+    const novaLista =
+        novaColuna.querySelector(
+            ".trello-list"
+        );
+
+    novaLista.appendChild(card);
+
+}
                 
                 salvarTransacoes();
                 atualizarSaldo();
@@ -311,8 +314,8 @@ document.querySelectorAll(".trello-column").forEach(coluna => {
         const transacao = transacoes[indiceTransacao];
         const novoMes = coluna.getAttribute("data-mes");
 
-        if (transacao && transacao.mes !== novoMes) {
-            transacao.mes = novoMes;
+        if (transacao && transacao.periodo !== novoMes) {
+            transacao.periodo = novoMes;
             salvarTransacoes();
             
             const listaInterna = coluna.querySelector(".trello-list");
@@ -364,7 +367,8 @@ if (formulario) {
 
         const mensagem = document.getElementById("mensagem");
         if (mensagem) {
-            mensagem.textContent = `✨ Adicionado com sucesso em ${mes}!`;
+            mensagem.textContent =
+`✨ Adicionado com sucesso em ${periodo}!`;
         }
 
         document.getElementById("descricao").value = "";
